@@ -52,8 +52,8 @@ setup(
         'Topic :: Utilities',
     ],
     install_requires=[
-        'click~=7.0',
-        'graphviz~=0.10',
+        'click>=6,<8',
+        'graphviz>=0.10,<1',
         'grimp==1.0b8',
     ],
     entry_points={
