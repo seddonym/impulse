@@ -47,6 +47,14 @@ There is currently only one command, feel free to suggest more by opening an iss
 
 Draw a graph of the dependencies within any installed Python package or subpackage.
 
+The graph shows the relationship between all the immediate children of the package. An arrow indicates that there is
+at least one import by the child (or any of its descendants) from the subpackage where the arrow points.
+
+For example, in a graph of the package ``django.db``, there is an arrow from ``django.db.backends`` pointing to
+``django.db.models``.  This is because ``django.db.backends.base.schema`` imports ``django.db.models.Index``. All
+descendants are treated as belonging to the child they are in, so an import between any of those descendants will
+cause an import to be shown.
+
 **Command**::
 
     impulse drawgraph django.db
