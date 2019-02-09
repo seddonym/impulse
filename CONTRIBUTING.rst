@@ -17,8 +17,8 @@ When `reporting a bug <https://github.com/seddonym/impulse/issues>`_ please incl
 Documentation improvements
 ==========================
 
-Nameless could always use more documentation, whether as part of the
-official Nameless docs, in docstrings, or even on the web in blog posts,
+Impulse could always use more documentation, whether as part of the
+official docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Feature requests and feedback
@@ -84,7 +84,3 @@ Tips
 To run a subset of tests::
 
     tox -e envname -- pytest -k test_myfeature
-
-To run all the test environments in *parallel* (you need to ``pip install detox``)::
-
-    detox
