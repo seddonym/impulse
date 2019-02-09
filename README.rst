@@ -18,7 +18,7 @@ Impulse is a command line tool for exploring the imports in a Python package.
 
 It can be used to produce dependency graphs such as this:
 
-.. image:: https://raw.githubusercontent.com/seddonym/impulse/drawgraph-docs/docs/_static/images/flask.png
+.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/flask.png
   :align: center
   :alt: Graph of flask package.
 
@@ -53,6 +53,6 @@ Draw a graph of the dependencies within any installed Python package or subpacka
 
 **Output:**
 
-.. image:: https://raw.githubusercontent.com/seddonym/impulse/drawgraph-docs/docs/_static/images/django.db.png
+.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/django.db.png
   :align: center
   :alt: Graph of django.db package.

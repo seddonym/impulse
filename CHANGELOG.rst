@@ -5,3 +5,8 @@ Changelog
 -----------------
 
 * Initial release.
+
+1.0b1 (2019-2-9)
+----------------
+
+* Added documentation.
