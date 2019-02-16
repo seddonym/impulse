@@ -28,14 +28,28 @@ introduced between versions.
 Installation
 ------------
 
-Install Impulse::
+Install Graphviz
+****************
+
+First, you will need to install Graphviz. For more information, see the
+`Graphviz download page`_ or search for "how to install Graphviz" on your operating system.
+
+
+.. _Graphviz download page: https://www.graphviz.org/download/
+
+Install Impulse
+***************
+
+::
 
     pip install impulse
 
-Install the Python package you wish to analyse::
+Install the Python package you wish to analyse
+**********************************************
+
+::
 
     pip install somepackage
-
 
 Command overview
 ----------------
