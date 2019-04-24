@@ -10,3 +10,8 @@ Changelog
 ----------------
 
 * Added documentation.
+
+1.0b2 (2019-4-24)
+-----------------
+
+* Upgraded Grimp.
