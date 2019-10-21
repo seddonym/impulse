@@ -15,3 +15,8 @@ Changelog
 -----------------
 
 * Upgraded Grimp.
+
+latest
+------
+
+* Pin dependency to Grimp major version 1.
