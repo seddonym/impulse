@@ -16,7 +16,7 @@ Changelog
 
 * Upgraded Grimp.
 
-latest
-------
+1.0b3 (2019-10-21)
+------------------
 
-* Pin dependency to Grimp major version 1.
+* Upgrade to stable version of Grimp.

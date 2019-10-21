@@ -21,7 +21,7 @@ def read(*names, **kwargs):
 
 setup(
     name='impulse',
-    version='1.0b2',
+    version='1.0b3',
     license='BSD 2-Clause License',
     description="Command line interface for analyzing Python imports.",
     long_description=read('README.rst'),
