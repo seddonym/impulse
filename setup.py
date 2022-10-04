@@ -46,16 +46,17 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Utilities',
     ],
     install_requires=[
-        'click>=6,<8',
-        'graphviz>=0.10,<1',
-        'grimp>=1,<2',
+        'click>=6',
+        'graphviz>=0.10',
+        'grimp>=1',
     ],
     entry_points={
         'console_scripts': [
