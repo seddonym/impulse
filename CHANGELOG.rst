@@ -1,6 +1,13 @@
 Changelog
 =========
 
+latest
+------
+
+* Remove upper bounds on dependencies.
+* Drop support for Python 3.6.
+* Add support for Python 3.9 and 3.10.
+
 1.0b3 (2019-10-21)
 ------------------
 
