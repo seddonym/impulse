@@ -22,9 +22,6 @@ It can be used to produce dependency graphs such as this:
   :align: center
   :alt: Graph of flask package.
 
-**Warning:** This software is currently in beta. It is undergoing active development, and breaking changes may be
-introduced between versions.
-
 Installation
 ------------
 
