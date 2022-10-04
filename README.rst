@@ -9,8 +9,8 @@ Impulse
     :alt: Python versions
     :target: https://pypi.org/project/impulse/
 
-.. image:: https://api.travis-ci.org/seddonym/impulse.svg?branch=master
-    :target: https://travis-ci.org/seddonym/impulse
+.. image:: https://api.travis-ci.com/seddonym/impulse.svg?branch=master
+    :target: https://app.travis-ci.com/github/seddonym/impulse
 
 * Free software: BSD license
 
