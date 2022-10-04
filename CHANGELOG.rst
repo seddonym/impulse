@@ -1,8 +1,8 @@
 Changelog
 =========
 
-latest
-------
+1.0 (2022-10-4)
+---------------
 
 * Remove upper bounds on dependencies.
 * Drop support for Python 3.6.
