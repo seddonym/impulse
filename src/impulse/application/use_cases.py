@@ -7,7 +7,7 @@ from graphviz import Digraph  # type: ignore
 import grimp  # type: ignore
 
 
-def draw_graph(module_name: str) -> None:
+def draw_graph(module_name: str, file_format="png") -> None:
     """
     Create a file showing a graph of the supplied package.
     Args:
@@ -21,7 +21,7 @@ def draw_graph(module_name: str) -> None:
     module_children = graph.find_children(module.name)
 
     dot = Digraph(
-        format='png',
+        format=file_format,
         node_attr={'fontname': 'helvetica'}
     )
     dot.attr(
