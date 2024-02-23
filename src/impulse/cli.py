@@ -9,7 +9,9 @@ def main():
 
 @main.command()
 @click.argument('module_name', type=str)
-def drawgraph(module_name):
+@click.option('--format', type=str, default='png')
+def drawgraph(module_name, format):
     use_cases.draw_graph(
         module_name=module_name,
+        file_format=format,
     )
