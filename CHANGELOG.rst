@@ -1,8 +1,8 @@
 Changelog
 =========
 
-latest
-------
+1.1 (2025-10-15)
+----------------
 
 * Drop support for Python 3.7 and 3.8.
 * Add support for Python 3.11 - 3.14.
