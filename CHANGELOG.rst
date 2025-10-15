@@ -5,6 +5,7 @@ latest
 ------
 
 * Drop support for Python 3.7 and 3.8.
+* Add support for Python 3.11 - 3.14.
 * Rename default branch to `main`.
 * Update contributing / local development tooling to use uv and just.
 * Switch to Github actions for CI.

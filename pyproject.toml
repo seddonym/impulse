@@ -10,7 +10,7 @@ requires-python = ">=3.9"
 dependencies = [
     "click>=6",
     "graphviz>=0.10",
-    "grimp>=1",
+    "grimp>=3.12",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -22,6 +22,10 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Utilities",
 ]
