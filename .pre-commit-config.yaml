@@ -19,8 +19,8 @@ repos:
         files: "^src|tests/.*$"
   
       - id: run-tests
-        name: "Run smoke test"
-        entry: just smoke-test
+        name: "Run tests"
+        entry: just test
         language: system
         pass_filenames: false
         files: "^src|tests/.*$"
