@@ -1,6 +1,14 @@
 Changelog
 =========
 
+latest
+------
+
+* Drop support for Python 3.7 and 3.8.
+* Rename default branch to `main`.
+* Update contributing / local development tooling to use uv and just.
+* Switch to Github actions for CI.
+
 1.0 (2022-10-4)
 ---------------
 
