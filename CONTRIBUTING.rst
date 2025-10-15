@@ -134,4 +134,7 @@ Releasing to Pypi
 9. Wait for tests to pass on CI.
 10. ``git tag v{new version number}``
 11. ``git push --tags``
-12. This should kick start the Github ``release`` workflow which releases the project to PyPI.
+12. This should kick start the Github ``release`` workflow which releases the project to PyPI (and to Test PyPI).
+
+You can also perform a test release manually by clicking *Run workflow*
+from `the Release workflow <https://github.com/seddonym/impulse/actions/workflows/release.yml>`_.

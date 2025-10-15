@@ -30,4 +30,4 @@ repos:
         entry: just build-docs
         language: system
         pass_filenames: false
-        files: "^docs/.*$"
+        files: "\\.rst$|^docs/.*$"
