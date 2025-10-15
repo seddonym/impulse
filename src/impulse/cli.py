@@ -8,7 +8,7 @@ def main():
 
 
 @main.command()
-@click.argument('module_name', type=str)
+@click.argument("module_name", type=str)
 def drawgraph(module_name):
     use_cases.draw_graph(
         module_name=module_name,
