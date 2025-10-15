@@ -17,6 +17,10 @@ jobs:
         python-version:  # All Python versions supported by Impulse.
           - "3.9"
           - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
 
     steps:
       - uses: actions/checkout@v5
@@ -33,7 +37,7 @@ jobs:
         uses: ts-graphviz/setup-graphviz@v2
 
       - name: Test
-        run: just smoke-test
+        run: just test
 
   lint:
     name: Lint
@@ -48,7 +52,7 @@ jobs:
       - name: Install uv and set the Python version
         uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.10"  # Latest supported Python version.
+          python-version: "3.14"  # Latest supported Python version.
 
       - name: Lint
         run: just lint

@@ -6,23 +6,37 @@ help:
 install-precommit:
     @uv run pre-commit install
 
-# Runs a smoke test under the latest supported Python version.
+# Run a smoke test under the latest supported Python version.
 # This will open up a window showing the graph.
-smoke-test:
+test:
     @uv run impulse drawgraph grimp
 
-# Runs tests under all supported Python versions.
-smoke-test-all: test-3-9 test-3-10
-# Note that all recipes called from this must use UV_LINK_MODE=copy,
-# otherwise the parallelism can corrupt the virtual environments.
+# Run tests under all supported Python versions.
+test-all: test-3-9 test-3-10 test-3-11 test-3-12 test-3-13 test-3-14
 
-# Runs tests under Python 3.9.
+# Run tests under Python 3.9.
 test-3-9:
-    @UV_LINK_MODE=copy UV_PYTHON=3.9 just smoke-test
+    @UV_PYTHON=3.9 just test
 
-# Runs tests under Python 3.10.
+# Run tests under Python 3.10.
 test-3-10:
-    @UV_LINK_MODE=copy UV_PYTHON=3.10 just smoke-test
+    @UV_PYTHON=3.10 just test
+
+# Run tests under Python 3.11.
+test-3-11:
+    @UV_PYTHON=3.11 just test
+
+# Run tests under Python 3.12.
+test-3-12:
+    @UV_PYTHON=3.12 just test
+
+# Run tests under Python 3.13.
+test-3-13:
+    @UV_PYTHON=3.13 just test
+
+# Run tests under Python 3.14.
+test-3-14:
+    @UV_PYTHON=3.14 just test
 
 # Format the code.
 format:
@@ -50,8 +64,7 @@ build-and-open-docs:
 
 # Run all linters, build docs and smoke tests.
 check:
-    @UV_PYTHON=3.10 just lint  # See .github/workflows/main.yml for why.
     @just lint
     @just build-docs
-    @just smoke-test-all
+    @just test-all
     @echo '👍 {{GREEN}} Linting, docs and smoke tests all good.{{NORMAL}}'

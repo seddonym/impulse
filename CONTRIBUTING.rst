@@ -98,7 +98,7 @@ a testing framework in place.
 
 In the meantime, you can run the test like this::
 
-    just smoke-test
+    just test
 
 
 Before you push
