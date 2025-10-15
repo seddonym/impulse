@@ -4,7 +4,7 @@ import sys
 import os
 
 from graphviz import Digraph  # type: ignore
-import grimp  # type: ignore
+import grimp
 
 
 def draw_graph(module_name: str) -> None:
