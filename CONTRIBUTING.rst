@@ -118,3 +118,20 @@ Or, if you just want to build them::
 
     just build-docs
 
+Releasing to Pypi
+=================
+
+(Only maintainers can do this.)
+
+1. Choose a new version number (based on `semver <https://semver.org/>`_).
+2. ``git pull origin main``
+3. Update ``CHANGELOG.rst`` with the new version number.
+4. Update the ``release`` variable in ``docs/conf.py`` with the new version number.
+5. Update the ``__version__`` variable in ``src/impulse/__init__.py`` with the new version number.
+6. Update ``project.version`` in ``pyproject.toml`` with the new version number.
+7. ``git commit -am "Release v{new version number"``
+8. ``git push``
+9. Wait for tests to pass on CI.
+10. ``git tag v{new version number}``
+11. ``git push --tags``
+12. This should kick start the Github ``release`` workflow which releases the project to PyPI.
