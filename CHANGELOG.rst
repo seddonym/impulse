@@ -1,6 +1,11 @@
 Changelog
 =========
 
+latest
+------
+
+* Add --show-import-totals flag.
+
 1.1 (2025-10-15)
 ----------------
 

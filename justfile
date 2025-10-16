@@ -11,6 +11,7 @@ install-precommit:
 test:
     @uv run pytest
     @uv run impulse drawgraph grimp
+    @uv run impulse drawgraph grimp --show-import-totals
 
 
 # Run tests under all supported Python versions.
