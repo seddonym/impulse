@@ -77,6 +77,11 @@ line_length = 99
 warn_unused_ignores = true
 warn_redundant_casts = true
 
+[[tool.mypy.overrides]]
+# Ignore packages with no stubs.
+module = ["graphviz"]
+ignore_missing_imports = true
+
 [tool.uv.sources]
 import-linter = { workspace = true }
 
