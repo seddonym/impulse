@@ -56,22 +56,44 @@ There is currently only one command, feel free to suggest more by opening an iss
 ``drawgraph``
 *************
 
+.. code-block:: text
+
+    Usage: impulse drawgraph [OPTIONS] MODULE_NAME
+
+    Options:
+      --show-import-totals  Label arrows with the number of imports they represent.
+      --help                Show this message and exit.
+
 Draw a graph of the dependencies within any installed Python package or subpackage.
 
 The graph shows the relationship between all the immediate children of the package. An arrow indicates that there is
 at least one import by the child (or any of its descendants) from the subpackage where the arrow points.
 
-For example, in a graph of the package ``django.db``, there is an arrow from ``django.db.backends`` pointing to
-``django.db.models``.  This is because ``django.db.backends.base.schema`` imports ``django.db.models.Index``. All
-descendants are treated as belonging to the child they are in, so an import between any of those descendants will
-cause an import to be shown.
+**Example**
 
-**Command**::
+.. code-block:: text
 
     impulse drawgraph django.db
-
-**Output:**
 
 .. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/django.db.png
   :align: center
   :alt: Graph of django.db package.
+
+\
+
+In this example, there is an arrow from ``django.db.models`` pointing to
+``django.db.utils``.  This is because (along with one other import) ``django.db.models.constraints`` imports
+``django.db.utils.DEFAULT_DB_ALIAS``.
+
+\
+\
+
+**Example with import totals**
+
+.. code-block:: text
+
+    impulse drawgraph django.db --show-import-totals
+
+.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/django.db.show-import-totals.png
+  :align: center
+  :alt: Graph of django.db package with import totals.

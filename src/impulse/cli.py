@@ -1,5 +1,11 @@
+import os
+
 import click
-from .application import use_cases
+import sys
+
+from impulse.application import use_cases
+from impulse import adapters
+import grimp
 
 
 @click.group()
@@ -8,8 +14,18 @@ def main():
 
 
 @main.command()
+@click.option(
+    "--show-import-totals",
+    is_flag=True,
+    help="Label arrows with the number of imports they represent.",
+)
 @click.argument("module_name", type=str)
-def drawgraph(module_name):
+def drawgraph(module_name: str, show_import_totals: bool) -> None:
     use_cases.draw_graph(
         module_name=module_name,
+        show_import_totals=show_import_totals,
+        sys_path=sys.path,
+        current_directory=os.getcwd(),
+        build_graph=grimp.build_graph,
+        viewer=adapters.RealGraphViewer(),
     )

@@ -6,10 +6,13 @@ help:
 install-precommit:
     @uv run pre-commit install
 
-# Run a smoke test under the latest supported Python version.
+# Run tests under the latest supported Python version.
 # This will open up a window showing the graph.
 test:
+    @uv run pytest
     @uv run impulse drawgraph grimp
+    @uv run impulse drawgraph grimp --show-import-totals
+
 
 # Run tests under all supported Python versions.
 test-all: test-3-9 test-3-10 test-3-11 test-3-12 test-3-13 test-3-14
