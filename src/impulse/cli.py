@@ -18,6 +18,7 @@ def main():
 def drawgraph(module_name):
     use_cases.draw_graph(
         module_name=module_name,
+        show_import_totals=False,
         sys_path=sys.path,
         current_directory=os.getcwd(),
         build_graph=grimp.build_graph,

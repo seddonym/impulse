@@ -7,6 +7,7 @@ from graphviz import Digraph
 
 def draw_graph(
     module_name: str,
+    show_import_totals: bool,
     sys_path: list[str],
     current_directory: str,
     build_graph: Callable[[str], grimp.ImportGraph],
@@ -16,6 +17,7 @@ def draw_graph(
     Create a file showing a graph of the supplied package.
     Args:
         module_name: the package or subpackage name of any importable Python package.
+        show_import_totals: whether to label the arrows with the total number of imports they represent.
         sys_path: the sys.path list (or a test double).
         current_directory: the current working directory.
         build_graph: the function which builds the graph of the supplied package
@@ -38,7 +40,26 @@ def draw_graph(
 
     # Dependencies between children.
     for upstream, downstream in itertools.permutations(module_children, r=2):
-        if graph.direct_import_exists(imported=upstream, importer=downstream, as_packages=True):
-            dot.edge(downstream, upstream)
-
+        if graph.direct_import_exists(importer=downstream, imported=upstream, as_packages=True):
+            if show_import_totals:
+                number_of_imports = _count_imports_between_packages(
+                    graph, importer=downstream, imported=upstream
+                )
+                label = str(number_of_imports)
+            else:
+                label = None
+            dot.edge(downstream, upstream, label=label)
     viewer.view(dot)
+
+
+def _count_imports_between_packages(
+    graph: grimp.ImportGraph, *, importer: str, imported: str
+) -> int:
+    return (
+        len(graph.find_matching_direct_imports(import_expression=f"{importer} -> {imported}"))
+        + len(graph.find_matching_direct_imports(import_expression=f"{importer} -> {imported}.**"))
+        + len(graph.find_matching_direct_imports(import_expression=f"{importer}.** -> {imported}"))
+        + len(
+            graph.find_matching_direct_imports(import_expression=f"{importer}.** -> {imported}.**")
+        )
+    )

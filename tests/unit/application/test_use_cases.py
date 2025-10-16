@@ -27,10 +27,24 @@ def build_fake_graph(package_name: str) -> grimp.ImportGraph:
         importer=f"{SOME_MODULE}.green",
         imported=f"{SOME_MODULE}.yellow.beta",
     )
+    # Add 4 imports between blue and red in different permutations of root and descendants.
     graph.add_import(
-        importer=f"{SOME_MODULE}.blue.alpha",
+        importer=f"{SOME_MODULE}.blue",
+        imported=f"{SOME_MODULE}.red",
+    )
+    graph.add_import(
+        importer=f"{SOME_MODULE}.blue",
         imported=f"{SOME_MODULE}.red.gamma",
     )
+    graph.add_import(
+        importer=f"{SOME_MODULE}.blue.alpha",
+        imported=f"{SOME_MODULE}.red",
+    )
+    graph.add_import(
+        importer=f"{SOME_MODULE}.blue.delta",
+        imported=f"{SOME_MODULE}.red.epsilon",
+    )
+
     return graph
 
 
@@ -51,6 +65,7 @@ class TestDrawGraph:
 
         use_cases.draw_graph(
             SOME_MODULE,
+            show_import_totals=False,
             sys_path=sys_path,
             current_directory=current_directory,
             build_graph=build_fake_graph,
@@ -70,6 +85,29 @@ class TestDrawGraph:
             '"mypackage.foo.blue" -> "mypackage.foo.green"',
             '"mypackage.foo.green" -> "mypackage.foo.yellow"',
             '"mypackage.foo.blue" -> "mypackage.foo.red"',
+        }
+
+    def test_draw_graph_show_import_totals(self):
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=True,
+            sys_path=[],
+            current_directory="/cwd",
+            build_graph=build_fake_graph,
+            viewer=viewer,
+        )
+
+        assert self._normalize_body(viewer.called_with_dot.body) == {
+            "concentrate=true",
+            '"mypackage.foo.green"',
+            '"mypackage.foo.blue"',
+            '"mypackage.foo.yellow"',
+            '"mypackage.foo.red"',
+            '"mypackage.foo.blue" -> "mypackage.foo.green" [label=1]',
+            '"mypackage.foo.green" -> "mypackage.foo.yellow" [label=1]',
+            '"mypackage.foo.blue" -> "mypackage.foo.red" [label=4]',
         }
 
     def _normalize_body(self, body: Iterable[str]) -> set[str]:
