@@ -11,6 +11,7 @@ dependencies = [
     "click>=6",
     "graphviz>=0.10",
     "grimp>=3.12",
+    "pytest>=8.4.2",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
