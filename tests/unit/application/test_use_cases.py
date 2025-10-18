@@ -1,8 +1,7 @@
-from collections.abc import Iterable
 from impulse.application import use_cases
 from copy import copy
+from impulse import dotfile
 import grimp
-import graphviz
 from grimp.adaptors.graph import ImportGraph
 from impulse import ports
 
@@ -50,9 +49,9 @@ def build_fake_graph(package_name: str) -> grimp.ImportGraph:
 
 class SpyGraphViewer(ports.GraphViewer):
     def __init__(self) -> None:
-        self.called_with_dot: graphviz.Digraph | None = None
+        self.called_with_dot: dotfile.DotGraph | None = None
 
-    def view(self, dot: graphviz.Digraph) -> None:
+    def view(self, dot: dotfile.DotGraph) -> None:
         self.called_with_dot = dot
 
 
@@ -76,15 +75,17 @@ class TestDrawGraph:
         assert sys_path == [current_directory, *original_sys_path]
         # The image generation function was called.
         assert viewer.called_with_dot, "Viewer not called."
-        assert self._normalize_body(viewer.called_with_dot.body) == {
-            "concentrate=true",
-            '"mypackage.foo.green"',
-            '"mypackage.foo.blue"',
-            '"mypackage.foo.yellow"',
-            '"mypackage.foo.red"',
-            '"mypackage.foo.blue" -> "mypackage.foo.green"',
-            '"mypackage.foo.green" -> "mypackage.foo.yellow"',
-            '"mypackage.foo.blue" -> "mypackage.foo.red"',
+        assert viewer.called_with_dot.title == SOME_MODULE
+        assert viewer.called_with_dot.nodes == {
+            "mypackage.foo.green",
+            "mypackage.foo.blue",
+            "mypackage.foo.yellow",
+            "mypackage.foo.red",
+        }
+        assert viewer.called_with_dot.edges == {
+            ("mypackage.foo.blue", "mypackage.foo.green", ""),
+            ("mypackage.foo.green", "mypackage.foo.yellow", ""),
+            ("mypackage.foo.blue", "mypackage.foo.red", ""),
         }
 
     def test_draw_graph_show_import_totals(self):
@@ -99,16 +100,15 @@ class TestDrawGraph:
             viewer=viewer,
         )
 
-        assert self._normalize_body(viewer.called_with_dot.body) == {
-            "concentrate=true",
-            '"mypackage.foo.green"',
-            '"mypackage.foo.blue"',
-            '"mypackage.foo.yellow"',
-            '"mypackage.foo.red"',
-            '"mypackage.foo.blue" -> "mypackage.foo.green" [label=1]',
-            '"mypackage.foo.green" -> "mypackage.foo.yellow" [label=1]',
-            '"mypackage.foo.blue" -> "mypackage.foo.red" [label=4]',
+        assert viewer.called_with_dot.title == SOME_MODULE
+        assert viewer.called_with_dot.nodes == {
+            "mypackage.foo.green",
+            "mypackage.foo.blue",
+            "mypackage.foo.yellow",
+            "mypackage.foo.red",
         }
-
-    def _normalize_body(self, body: Iterable[str]) -> set[str]:
-        return {item.strip() for item in body}
+        assert viewer.called_with_dot.edges == {
+            ("mypackage.foo.blue", "mypackage.foo.green", "1"),
+            ("mypackage.foo.green", "mypackage.foo.yellow", "1"),
+            ("mypackage.foo.blue", "mypackage.foo.red", "4"),
+        }

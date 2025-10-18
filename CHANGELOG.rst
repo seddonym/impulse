@@ -1,6 +1,12 @@
 Changelog
 =========
 
+latest
+------
+
+* Display graph in browser rather than using Graphviz.
+* Render nodes as relative imports.
+
 1.2 (2025-10-16)
 ----------------
 

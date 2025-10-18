@@ -1,8 +1,7 @@
 from typing import Callable
 import itertools
 import grimp
-from impulse import ports
-from graphviz import Digraph
+from impulse import ports, dotfile
 
 
 def draw_graph(
@@ -31,12 +30,10 @@ def draw_graph(
     graph = build_graph(module.package_name)
     module_children = graph.find_children(module.name)
 
-    dot = Digraph(format="png", node_attr={"fontname": "helvetica"})
-    dot.attr(
-        concentrate="true",  # Merge lines together.
-    )
+    dot = dotfile.DotGraph(title=module_name)
+
     for module_child in module_children:
-        dot.node(module_child)
+        dot.add_node(module_child)
 
     # Dependencies between children.
     for upstream, downstream in itertools.permutations(module_children, r=2):
@@ -47,8 +44,8 @@ def draw_graph(
                 )
                 label = str(number_of_imports)
             else:
-                label = None
-            dot.edge(downstream, upstream, label=label)
+                label = ""
+            dot.add_edge(source=downstream, destination=upstream, label=label)
     viewer.view(dot)
 
 

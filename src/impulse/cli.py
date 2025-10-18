@@ -27,5 +27,5 @@ def drawgraph(module_name: str, show_import_totals: bool) -> None:
         sys_path=sys.path,
         current_directory=os.getcwd(),
         build_graph=grimp.build_graph,
-        viewer=adapters.RealGraphViewer(),
+        viewer=adapters.BrowserGraphViewer(),
     )
