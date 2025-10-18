@@ -29,13 +29,16 @@ class DotGraph:
         }}""")
 
     def _render_nodes(self) -> str:
-        return "\n".join(f'"{node}"\n' for node in sorted(self.nodes))
+        return "\n".join(f'"{self._render_module(node)}"\n' for node in sorted(self.nodes))
 
     def _render_edges(self) -> str:
         return "\n".join(
-            f'"{source}" ->  "{destination}"{self._render_label(label)}\n'
+            f'"{self._render_module(source)}" ->  "{self._render_module(destination)}"{self._render_label(label)}\n'
             for source, destination, label in sorted(self.edges)
         )
+
+    def _render_module(self, module: str) -> str:
+        return module.rsplit(self.title)[1]
 
     def _render_label(self, label: str) -> str:
         return f" [label={label}]" if label else ""
