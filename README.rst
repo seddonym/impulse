@@ -16,33 +16,39 @@ Impulse
 
 Impulse is a command line tool for exploring the imports in a Python package.
 
-It can be used to produce dependency graphs such as this:
+Running it will open up the graph in a browser window, along with download links for SVG and PNG.
 
-.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/flask.png
+Screenshot
+------------
+
+.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/screenshot.png
   :align: center
-  :alt: Graph of flask package.
+  :alt: Graph of django.db.
+
+\
 
 Installation
 ------------
 
-Install Impulse
-***************
-
-::
+1. Install Impulse using your favorite Python package manager. E.g., with ``pip``::
 
     pip install impulse
 
-Install the Python package you wish to analyse
-**********************************************
+2. Ensure the package under test is importable, e.g. by changing your working directory to the one containing the
+package, or installing it via a Python package manager.
 
+One liner using ``uv tool``
+***************************
+
+If you use `uv <https://docs.astral.sh/uv/>`_ you can run it with this one-liner, without needing to install anything.
 ::
 
-    pip install somepackage
+    uv tool run --with=PACKAGE impulse drawgraph MODULE_NAME
 
 Command overview
 ----------------
 
-There is currently only one command, feel free to suggest more by opening an issue or pull request.
+There is currently only one command.
 
 ``drawgraph``
 *************
@@ -74,8 +80,8 @@ The graph visualization is opened in a browser.
 
 \
 
-In this example, there is an arrow from ``django.db.models`` pointing to
-``django.db.utils``.  This is because (along with one other import) ``django.db.models.constraints`` imports
+In this example, there is an arrow from ``.models`` to
+``.utils``.  This is because (along with one other import) ``django.db.models.constraints`` imports
 ``django.db.utils.DEFAULT_DB_ALIAS``.
 
 \
@@ -90,3 +96,6 @@ In this example, there is an arrow from ``django.db.models`` pointing to
 .. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/django.db.show-import-totals.png
   :align: center
   :alt: Graph of django.db package with import totals.
+
+Here you can see that there are two imports from modules within ``django.db.models`` of modules
+within ``django.db.utils``.
