@@ -1,10 +1,10 @@
-import graphviz
+from impulse import dotfile
 
 
 class GraphViewer:
     """
-    Abstraction for generating the graph image and opening it using the default os viewer.
+    Abstraction for rendering and displaying a graph visualization.
     """
 
-    def view(self, dot: graphviz.Digraph) -> None:
+    def view(self, dot: dotfile.DotGraph) -> None:
         raise NotImplementedError

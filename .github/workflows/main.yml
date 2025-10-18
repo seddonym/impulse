@@ -33,9 +33,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Setup Graphviz
-        uses: ts-graphviz/setup-graphviz@v2
-
       - name: Test
         run: just test
 

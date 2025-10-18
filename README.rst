@@ -25,15 +25,6 @@ It can be used to produce dependency graphs such as this:
 Installation
 ------------
 
-Install Graphviz
-****************
-
-First, you will need to install Graphviz. For more information, see the
-`Graphviz download page`_ or search for "how to install Graphviz" on your operating system.
-
-
-.. _Graphviz download page: https://www.graphviz.org/download/
-
 Install Impulse
 ***************
 
@@ -68,6 +59,8 @@ Draw a graph of the dependencies within any installed Python package or subpacka
 
 The graph shows the relationship between all the immediate children of the package. An arrow indicates that there is
 at least one import by the child (or any of its descendants) from the subpackage where the arrow points.
+
+The graph visualization is opened in a browser.
 
 **Example**
 

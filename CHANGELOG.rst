@@ -1,6 +1,11 @@
 Changelog
 =========
 
+latest
+------
+
+* Display graph in browser rather than using Graphviz.
+
 1.2 (2025-10-16)
 ----------------
 
