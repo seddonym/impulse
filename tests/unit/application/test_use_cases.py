@@ -1,6 +1,7 @@
 from impulse.application import use_cases
 from copy import copy
 from impulse import dotfile
+from impulse.dotfile import Edge
 import grimp
 from grimp.adaptors.graph import ImportGraph
 from impulse import ports
@@ -83,9 +84,9 @@ class TestDrawGraph:
             "mypackage.foo.red",
         }
         assert viewer.called_with_dot.edges == {
-            ("mypackage.foo.blue", "mypackage.foo.green", ""),
-            ("mypackage.foo.green", "mypackage.foo.yellow", ""),
-            ("mypackage.foo.blue", "mypackage.foo.red", ""),
+            Edge("mypackage.foo.blue", "mypackage.foo.green", ""),
+            Edge("mypackage.foo.green", "mypackage.foo.yellow", ""),
+            Edge("mypackage.foo.blue", "mypackage.foo.red", ""),
         }
 
     def test_draw_graph_show_import_totals(self):
@@ -108,7 +109,7 @@ class TestDrawGraph:
             "mypackage.foo.red",
         }
         assert viewer.called_with_dot.edges == {
-            ("mypackage.foo.blue", "mypackage.foo.green", "1"),
-            ("mypackage.foo.green", "mypackage.foo.yellow", "1"),
-            ("mypackage.foo.blue", "mypackage.foo.red", "4"),
+            Edge("mypackage.foo.blue", "mypackage.foo.green", "1"),
+            Edge("mypackage.foo.green", "mypackage.foo.yellow", "1"),
+            Edge("mypackage.foo.blue", "mypackage.foo.red", "4"),
         }

@@ -45,7 +45,7 @@ def draw_graph(
                 label = str(number_of_imports)
             else:
                 label = ""
-            dot.add_edge(source=downstream, destination=upstream, label=label)
+            dot.add_edge(dotfile.Edge(source=downstream, destination=upstream, label=label))
     viewer.view(dot)
 
 

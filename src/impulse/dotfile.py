@@ -1,4 +1,12 @@
 from textwrap import dedent
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, order=True)
+class Edge:
+    source: str
+    destination: str
+    label: str
 
 
 class DotGraph:
@@ -11,13 +19,13 @@ class DotGraph:
     def __init__(self, title: str) -> None:
         self.title = title
         self.nodes: set[str] = set()
-        self.edges: set[tuple[str, str, str]] = set()
+        self.edges: set[Edge] = set()
 
     def add_node(self, name: str) -> None:
         self.nodes.add(name)
 
-    def add_edge(self, *, source: str, destination: str, label: str) -> None:
-        self.edges.add((source, destination, label))
+    def add_edge(self, edge: Edge) -> None:
+        self.edges.add(edge)
 
     def render(self) -> str:
         # concentrate=true means that we merge the lines together.
@@ -33,8 +41,8 @@ class DotGraph:
 
     def _render_edges(self) -> str:
         return "\n".join(
-            f'"{self._render_module(source)}" ->  "{self._render_module(destination)}"{self._render_label(label)}\n'
-            for source, destination, label in sorted(self.edges)
+            f'"{self._render_module(edge.source)}" ->  "{self._render_module(edge.destination)}"{self._render_label(edge.label)}\n'
+            for edge in sorted(self.edges)
         )
 
     def _render_module(self, module: str) -> str:
