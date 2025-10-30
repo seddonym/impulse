@@ -9,11 +9,17 @@ class Edge:
     label: str
 
     def __str__(self) -> str:
-        return f'"{DotGraph.render_module(self.source)}" ->  "{DotGraph.render_module(self.destination)}"{self._render_label(self.label)}\n'
+        return f'"{DotGraph.render_module(self.source)}" ->  "{DotGraph.render_module(self.destination)}"{self._render_attrs()}\n'
 
-    @staticmethod
-    def _render_label(label: str) -> str:
-        return f" [label={label}]" if label else ""
+    def _render_attrs(self) -> str:
+        attrs: dict[str, str] = {}
+        if self.label:
+            attrs["label"] = self.label
+        if attrs:
+            joined_attrs = ", ".join([f'{key}="{value}"' for key, value in attrs.items()])
+            return f" [{joined_attrs}]"
+        else:
+            return ""
 
 
 class DotGraph:
