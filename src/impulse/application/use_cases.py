@@ -1,3 +1,4 @@
+from collections.abc import Set
 from typing import Callable
 import itertools
 import grimp
@@ -26,7 +27,6 @@ def draw_graph(
     # Add current directory to the path, as this doesn't happen automatically.
     sys_path.insert(0, current_directory)
 
-    # Build a Grimp graph, squashing the children.
     module = grimp.Module(module_name)
     grimp_graph = build_graph(module.package_name)
 
@@ -35,43 +35,102 @@ def draw_graph(
     viewer.view(dot)
 
 
-def _build_dot(
-    grimp_graph: grimp.ImportGraph,
-    module_name: str,
-    show_import_totals: bool,
-) -> dotfile.DotGraph:
-    dot = dotfile.DotGraph(title=module_name)
+class _DotGraphBuildStrategy:
+    def build(self, module_name: str, grimp_graph: grimp.ImportGraph) -> dotfile.DotGraph:
+        children = grimp_graph.find_children(module_name)
 
-    module_children = grimp_graph.find_children(module_name)
+        self.prepare_graph(grimp_graph, children)
 
-    for module_child in module_children:
-        dot.add_node(module_child)
+        dot = dotfile.DotGraph(title=module_name)
+        for child in children:
+            dot.add_node(child)
+        for upstream, downstream in itertools.permutations(children, r=2):
+            if edge := self.build_edge(grimp_graph, upstream, downstream):
+                dot.add_edge(edge)
 
-    # Dependencies between children.
-    for upstream, downstream in itertools.permutations(module_children, r=2):
+        return dot
+
+    def prepare_graph(self, grimp_graph: grimp.ImportGraph, children: Set[str]) -> None:
+        pass
+
+    def build_edge(
+        self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
+    ) -> dotfile.Edge | None:
+        raise NotImplementedError
+
+
+class _ModuleSquashingBuildStrategy(_DotGraphBuildStrategy):
+    """Fast builder for when we don't need additional data about the imports."""
+
+    def prepare_graph(self, grimp_graph: grimp.ImportGraph, children: Set[str]) -> None:
+        for child in children:
+            grimp_graph.squash_module(child)
+
+    def build_edge(
+        self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
+    ) -> dotfile.Edge | None:
+        if grimp_graph.direct_import_exists(importer=downstream, imported=upstream):
+            return dotfile.Edge(source=downstream, destination=upstream)
+        return None
+
+
+class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
+    """Slower builder for when we want to work on the whole graph,
+    without squashing children.
+    """
+
+    def __init__(self, show_import_totals: bool) -> None:
+        self.show_import_totals = show_import_totals
+
+    def build_edge(
+        self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
+    ) -> dotfile.Edge | None:
         if grimp_graph.direct_import_exists(
             importer=downstream, imported=upstream, as_packages=True
         ):
-            if show_import_totals:
-                number_of_imports = _count_imports_between_packages(
+            if self.show_import_totals:
+                number_of_imports = self._count_imports_between_packages(
                     grimp_graph, importer=downstream, imported=upstream
                 )
                 label = str(number_of_imports)
             else:
                 label = ""
-            dot.add_edge(dotfile.Edge(source=downstream, destination=upstream, label=label))
+            return dotfile.Edge(source=downstream, destination=upstream, label=label)
+        return None
 
-    return dot
-
-
-def _count_imports_between_packages(
-    graph: grimp.ImportGraph, *, importer: str, imported: str
-) -> int:
-    return (
-        len(graph.find_matching_direct_imports(import_expression=f"{importer} -> {imported}"))
-        + len(graph.find_matching_direct_imports(import_expression=f"{importer} -> {imported}.**"))
-        + len(graph.find_matching_direct_imports(import_expression=f"{importer}.** -> {imported}"))
-        + len(
-            graph.find_matching_direct_imports(import_expression=f"{importer}.** -> {imported}.**")
+    @staticmethod
+    def _count_imports_between_packages(
+        graph: grimp.ImportGraph, *, importer: str, imported: str
+    ) -> int:
+        return (
+            len(graph.find_matching_direct_imports(import_expression=f"{importer} -> {imported}"))
+            + len(
+                graph.find_matching_direct_imports(
+                    import_expression=f"{importer} -> {imported}.**"
+                )
+            )
+            + len(
+                graph.find_matching_direct_imports(
+                    import_expression=f"{importer}.** -> {imported}"
+                )
+            )
+            + len(
+                graph.find_matching_direct_imports(
+                    import_expression=f"{importer}.** -> {imported}.**"
+                )
+            )
         )
-    )
+
+
+def _build_dot(
+    grimp_graph: grimp.ImportGraph,
+    module_name: str,
+    show_import_totals: bool,
+) -> dotfile.DotGraph:
+    strategy: _DotGraphBuildStrategy
+    if show_import_totals:
+        strategy = _ImportExpressionBuildStrategy(show_import_totals=True)
+    else:
+        strategy = _ModuleSquashingBuildStrategy()
+
+    return strategy.build(module_name, grimp_graph)

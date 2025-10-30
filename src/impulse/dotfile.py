@@ -6,7 +6,7 @@ from dataclasses import dataclass
 class Edge:
     source: str
     destination: str
-    label: str
+    label: str = ""
     emphasized: bool = False
 
     def __str__(self) -> str:
