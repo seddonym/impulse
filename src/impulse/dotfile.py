@@ -7,6 +7,7 @@ class Edge:
     source: str
     destination: str
     label: str
+    emphasized: bool = False
 
     def __str__(self) -> str:
         return f'"{DotGraph.render_module(self.source)}" ->  "{DotGraph.render_module(self.destination)}"{self._render_attrs()}\n'
@@ -15,6 +16,8 @@ class Edge:
         attrs: dict[str, str] = {}
         if self.label:
             attrs["label"] = self.label
+        if self.emphasized:
+            attrs["color"] = "red"
         if attrs:
             joined_attrs = ", ".join([f'{key}="{value}"' for key, value in attrs.items()])
             return f" [{joined_attrs}]"
