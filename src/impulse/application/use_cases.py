@@ -26,27 +26,42 @@ def draw_graph(
     # Add current directory to the path, as this doesn't happen automatically.
     sys_path.insert(0, current_directory)
 
+    # Build a Grimp graph, squashing the children.
     module = grimp.Module(module_name)
-    graph = build_graph(module.package_name)
-    module_children = graph.find_children(module.name)
+    grimp_graph = build_graph(module.package_name)
 
+    dot = _build_dot(grimp_graph, module_name, show_import_totals)
+
+    viewer.view(dot)
+
+
+def _build_dot(
+    grimp_graph: grimp.ImportGraph,
+    module_name: str,
+    show_import_totals: bool,
+) -> dotfile.DotGraph:
     dot = dotfile.DotGraph(title=module_name)
+
+    module_children = grimp_graph.find_children(module_name)
 
     for module_child in module_children:
         dot.add_node(module_child)
 
     # Dependencies between children.
     for upstream, downstream in itertools.permutations(module_children, r=2):
-        if graph.direct_import_exists(importer=downstream, imported=upstream, as_packages=True):
+        if grimp_graph.direct_import_exists(
+            importer=downstream, imported=upstream, as_packages=True
+        ):
             if show_import_totals:
                 number_of_imports = _count_imports_between_packages(
-                    graph, importer=downstream, imported=upstream
+                    grimp_graph, importer=downstream, imported=upstream
                 )
                 label = str(number_of_imports)
             else:
                 label = ""
             dot.add_edge(dotfile.Edge(source=downstream, destination=upstream, label=label))
-    viewer.view(dot)
+
+    return dot
 
 
 def _count_imports_between_packages(
