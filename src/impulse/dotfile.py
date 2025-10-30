@@ -8,6 +8,13 @@ class Edge:
     destination: str
     label: str
 
+    def __str__(self) -> str:
+        return f'"{DotGraph.render_module(self.source)}" ->  "{DotGraph.render_module(self.destination)}"{self._render_label(self.label)}\n'
+
+    @staticmethod
+    def _render_label(label: str) -> str:
+        return f" [label={label}]" if label else ""
+
 
 class DotGraph:
     """
@@ -37,16 +44,12 @@ class DotGraph:
         }}""")
 
     def _render_nodes(self) -> str:
-        return "\n".join(f'"{self._render_module(node)}"\n' for node in sorted(self.nodes))
+        return "\n".join(f'"{self.render_module(node)}"\n' for node in sorted(self.nodes))
 
     def _render_edges(self) -> str:
-        return "\n".join(
-            f'"{self._render_module(edge.source)}" ->  "{self._render_module(edge.destination)}"{self._render_label(edge.label)}\n'
-            for edge in sorted(self.edges)
-        )
+        return "\n".join(str(edge) for edge in sorted(self.edges))
 
-    def _render_module(self, module: str) -> str:
-        return module.rsplit(self.title)[1]
-
-    def _render_label(self, label: str) -> str:
-        return f" [label={label}]" if label else ""
+    @staticmethod
+    def render_module(module: str) -> str:
+        # Render as relative module.
+        return f".{module.split('.')[-1]}"
