@@ -58,8 +58,12 @@ There is currently only one command.
     Usage: impulse drawgraph [OPTIONS] MODULE_NAME
 
     Options:
-      --show-import-totals  Label arrows with the number of imports they represent.
-      --help                Show this message and exit.
+      --show-import-totals   Label arrows with the number of imports they
+                             represent.
+      --show-cycle-breakers  Identify a set of dependencies that, if removed,
+                             would make the graph acyclic, and display them as
+                             dashed lines.
+      --help                 Show this message and exit.
 
 Draw a graph of the dependencies within any installed Python package or subpackage.
 
@@ -99,3 +103,19 @@ In this example, there is an arrow from ``.models`` to
 
 Here you can see that there are two imports from modules within ``django.db.models`` of modules
 within ``django.db.utils``.
+\
+\
+
+**Example with cycle breakers**
+
+.. code-block:: text
+
+    impulse drawgraph django.db --show-cycle-breakers
+
+.. image:: https://raw.githubusercontent.com/seddonym/impulse/master/docs/_static/images/django.db.show-cycle-breakers.png
+  :align: center
+  :alt: Graph of django.db package with cycle breakers.
+
+Here you can see that two of the dependencies are shown as a dashed line. If these dependencies were to be
+removed, the graph would be acyclic. To decide on the cycle breakers, Impulse uses the
+`nominate_cycle_breakers method provided by Grimp <https://grimp.readthedocs.io/en/stable/usage.html#ImportGraph.nominate_cycle_breakers>`_.
