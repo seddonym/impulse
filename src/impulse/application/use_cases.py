@@ -8,6 +8,7 @@ from impulse import ports, dotfile
 def draw_graph(
     module_name: str,
     show_import_totals: bool,
+    show_cycle_breakers: bool,
     sys_path: list[str],
     current_directory: str,
     build_graph: Callable[[str], grimp.ImportGraph],
@@ -18,6 +19,7 @@ def draw_graph(
     Args:
         module_name: the package or subpackage name of any importable Python package.
         show_import_totals: whether to label the arrows with the total number of imports they represent.
+        show_cycle_breakers: marks a set of dependencies that, if removed, would make the graph acyclic.
         sys_path: the sys.path list (or a test double).
         current_directory: the current working directory.
         build_graph: the function which builds the graph of the supplied package
@@ -30,7 +32,7 @@ def draw_graph(
     module = grimp.Module(module_name)
     grimp_graph = build_graph(module.package_name)
 
-    dot = _build_dot(grimp_graph, module_name, show_import_totals)
+    dot = _build_dot(grimp_graph, module_name, show_import_totals, show_cycle_breakers)
 
     viewer.view(dot)
 
@@ -41,7 +43,7 @@ class _DotGraphBuildStrategy:
 
         self.prepare_graph(grimp_graph, children)
 
-        dot = dotfile.DotGraph(title=module_name)
+        dot = dotfile.DotGraph(title=module_name, concentrate=self.should_concentrate())
         for child in children:
             dot.add_node(child)
         for upstream, downstream in itertools.permutations(children, r=2):
@@ -49,6 +51,9 @@ class _DotGraphBuildStrategy:
                 dot.add_edge(edge)
 
         return dot
+
+    def should_concentrate(self) -> bool:
+        return True
 
     def prepare_graph(self, grimp_graph: grimp.ImportGraph, children: Set[str]) -> None:
         pass
@@ -79,8 +84,46 @@ class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
     without squashing children.
     """
 
-    def __init__(self, show_import_totals: bool) -> None:
+    def __init__(
+        self, *, module_name: str, show_import_totals: bool, show_cycle_breakers: bool
+    ) -> None:
+        self.module_name = module_name
         self.show_import_totals = show_import_totals
+        self.show_cycle_breakers = show_cycle_breakers
+        self.cycle_breakers: set[tuple[str, str]] | None = None
+
+    def should_concentrate(self) -> bool:
+        # We need to see edge direction emphasized separately.
+        return not (self.show_import_totals or self.show_cycle_breakers)
+
+    def prepare_graph(self, grimp_graph: grimp.ImportGraph, children: Set[str]) -> None:
+        super().prepare_graph(grimp_graph, children)
+
+        if self.show_cycle_breakers:
+            self.cycle_breakers = self._get_coarse_grained_cycle_breakers(grimp_graph, children)
+
+    def _get_coarse_grained_cycle_breakers(
+        self, grimp_graph: grimp.ImportGraph, children: Set[str]
+    ) -> set[tuple[str, str]]:
+        # In the form (importer, imported).
+        coarse_grained_cycle_breakers: set[tuple[str, str]] = set()
+
+        for fine_grained_cycle_breaker in grimp_graph.nominate_cycle_breakers(self.module_name):
+            importer, imported = fine_grained_cycle_breaker
+            importer_ancestor = self._get_self_or_ancestor(candidate=importer, ancestors=children)
+            imported_ancestor = self._get_self_or_ancestor(candidate=imported, ancestors=children)
+
+            if importer_ancestor and imported_ancestor:
+                coarse_grained_cycle_breakers.add((importer_ancestor, imported_ancestor))
+
+        return coarse_grained_cycle_breakers
+
+    @staticmethod
+    def _get_self_or_ancestor(candidate: str, ancestors: Set[str]) -> str | None:
+        for ancestor in ancestors:
+            if candidate == ancestor or candidate.startswith(f"{ancestor}."):
+                return ancestor
+        return None
 
     def build_edge(
         self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
@@ -95,7 +138,17 @@ class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
                 label = str(number_of_imports)
             else:
                 label = ""
-            return dotfile.Edge(source=downstream, destination=upstream, label=label)
+
+            if self.show_cycle_breakers:
+                assert self.cycle_breakers is not None
+                is_cycle_breaker = (downstream, upstream) in self.cycle_breakers
+                emphasized = is_cycle_breaker
+            else:
+                emphasized = False
+
+            return dotfile.Edge(
+                source=downstream, destination=upstream, label=label, emphasized=emphasized
+            )
         return None
 
     @staticmethod
@@ -126,10 +179,15 @@ def _build_dot(
     grimp_graph: grimp.ImportGraph,
     module_name: str,
     show_import_totals: bool,
+    show_cycle_breakers: bool,
 ) -> dotfile.DotGraph:
     strategy: _DotGraphBuildStrategy
-    if show_import_totals:
-        strategy = _ImportExpressionBuildStrategy(show_import_totals=True)
+    if show_import_totals or show_cycle_breakers:
+        strategy = _ImportExpressionBuildStrategy(
+            module_name=module_name,
+            show_import_totals=show_import_totals,
+            show_cycle_breakers=show_cycle_breakers,
+        )
     else:
         strategy = _ModuleSquashingBuildStrategy()
 

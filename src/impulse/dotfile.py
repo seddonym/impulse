@@ -17,7 +17,7 @@ class Edge:
         if self.label:
             attrs["label"] = self.label
         if self.emphasized:
-            attrs["color"] = "red"
+            attrs["style"] = "dashed"
         if attrs:
             joined_attrs = ", ".join([f'{key}="{value}"' for key, value in attrs.items()])
             return f" [{joined_attrs}]"
@@ -32,10 +32,11 @@ class DotGraph:
     https://en.wikipedia.org/wiki/DOT_(graph_description_language)
     """
 
-    def __init__(self, title: str) -> None:
+    def __init__(self, title: str, concentrate: bool = True) -> None:
         self.title = title
         self.nodes: set[str] = set()
         self.edges: set[Edge] = set()
+        self.concentrate = concentrate
 
     def add_node(self, name: str) -> None:
         self.nodes.add(name)
@@ -47,7 +48,7 @@ class DotGraph:
         # concentrate=true means that we merge the lines together.
         return dedent(f"""digraph {{
             node [fontname=helvetica]
-            concentrate=true
+            {"concentrate=true" if self.concentrate else ""}
             {self._render_nodes()}
             {self._render_edges()}
         }}""")
