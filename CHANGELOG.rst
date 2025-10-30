@@ -1,6 +1,11 @@
 Changelog
 =========
 
+latest
+------
+
+* Add --show-cycle-breakers flag.
+
 2.0 (2025-10-20)
 ----------------
 

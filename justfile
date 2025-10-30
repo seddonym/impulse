@@ -12,6 +12,7 @@ test:
     @uv run pytest
     @uv run impulse drawgraph grimp
     @uv run impulse drawgraph grimp --show-import-totals
+    @uv run --with=django impulse drawgraph django.db --show-cycle-breakers
 
 
 # Run tests under all supported Python versions.

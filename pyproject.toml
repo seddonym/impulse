@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.9"
 dependencies = [
     "click>=6",
-    "grimp>=3.12",
+    "grimp==3.13",
     "pytest>=8.4.2",
 ]
 classifiers = [
@@ -76,9 +76,6 @@ line_length = 99
 warn_unused_ignores = true
 warn_redundant_casts = true
 
-[[tool.mypy.overrides]]
-# Ignore packages with no stubs.
-ignore_missing_imports = true
 
 [tool.uv.sources]
 import-linter = { workspace = true }
