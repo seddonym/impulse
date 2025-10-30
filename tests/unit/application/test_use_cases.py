@@ -44,6 +44,11 @@ def build_fake_graph(package_name: str) -> grimp.ImportGraph:
         importer=f"{SOME_MODULE}.blue.delta",
         imported=f"{SOME_MODULE}.red.epsilon",
     )
+    # Add a cycle.
+    graph.add_import(
+        importer=f"{SOME_MODULE}.red.epsilon",
+        imported=f"{SOME_MODULE}.blue.alpha",
+    )
 
     return graph
 
@@ -87,6 +92,7 @@ class TestDrawGraph:
             Edge("mypackage.foo.blue", "mypackage.foo.green", ""),
             Edge("mypackage.foo.green", "mypackage.foo.yellow", ""),
             Edge("mypackage.foo.blue", "mypackage.foo.red", ""),
+            Edge("mypackage.foo.red", "mypackage.foo.blue", ""),
         }
 
     def test_draw_graph_show_import_totals(self):
@@ -112,4 +118,5 @@ class TestDrawGraph:
             Edge("mypackage.foo.blue", "mypackage.foo.green", "1"),
             Edge("mypackage.foo.green", "mypackage.foo.yellow", "1"),
             Edge("mypackage.foo.blue", "mypackage.foo.red", "4"),
+            Edge("mypackage.foo.red", "mypackage.foo.blue", "1"),
         }
