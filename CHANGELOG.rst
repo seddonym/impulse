@@ -1,8 +1,8 @@
 Changelog
 =========
 
-latest
-------
+2.1 (2025-10-31)
+----------------
 
 * Add --show-cycle-breakers flag.
 * Support namespace packages.
