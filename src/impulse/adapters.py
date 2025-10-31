@@ -3,6 +3,7 @@ import webbrowser
 from impulse import ports
 from textwrap import dedent
 from impulse import dotfile
+import importlib
 
 
 class BrowserGraphViewer(ports.GraphViewer):
@@ -169,3 +170,21 @@ class BrowserGraphViewer(ports.GraphViewer):
 
         # Open in browser
         webbrowser.open(f"file://{html_path}")
+
+
+def get_top_level_package(module_name: str) -> str:
+    """
+    Returns the top-level package name from the given module name.
+
+    This will usually be the first part of the dotted module name (before the first dot), but for namespace packages
+    it will be the 'portion' name.
+    """
+
+    # Successively work through the module components until we encounter one with a corresponding file.
+    components = module_name.split(".")
+    for level in range(len(components)):
+        candidate_name = ".".join(components[: level + 1])
+        candidate = importlib.import_module(candidate_name)
+        if candidate.__file__:
+            return candidate_name
+    raise ImportError(f"Can't import module '{module_name}'. Is it on the Python path?")

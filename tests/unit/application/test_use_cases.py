@@ -10,6 +10,10 @@ SOME_ROOT_PACKAGE = "mypackage"
 SOME_MODULE = f"{SOME_ROOT_PACKAGE}.foo"
 
 
+def fake_get_top_level_package_non_namespace(module_name: str) -> str:
+    return module_name.split(".")[0]
+
+
 def build_fake_graph(package_name: str) -> grimp.ImportGraph:
     graph = grimp.ImportGraph()
     graph.add_module(package_name)
@@ -74,6 +78,7 @@ class TestDrawGraph:
             show_cycle_breakers=False,
             sys_path=sys_path,
             current_directory=current_directory,
+            get_top_level_package=fake_get_top_level_package_non_namespace,
             build_graph=build_fake_graph,
             viewer=viewer,
         )
@@ -97,6 +102,32 @@ class TestDrawGraph:
             Edge("mypackage.foo.red", "mypackage.foo.blue"),
         }
 
+    def test_draw_graph_calls_top_level_package(self):
+        def get_top_level_package(module: str) -> str:
+            return "some.namespace"
+
+        def asserting_build_graph(top_level_package: str) -> grimp.ImportGraph:
+            assert top_level_package == "some.namespace"
+            graph = grimp.ImportGraph()
+            graph.add_module("some.namespace")
+            graph.add_module("some.namespace.foo")
+            graph.add_module("some.namespace.foo.blue")
+            graph.add_module("some.namespace.foo.blue.alpha")
+            graph.add_module("some.namespace.foo.blue.beta")
+            return graph
+
+        viewer = SpyGraphViewer()
+        use_cases.draw_graph(
+            "some.namespace.foo.blue",
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=get_top_level_package,
+            build_graph=asserting_build_graph,
+            viewer=viewer,
+        )
+
     def test_draw_graph_show_import_totals(self):
         viewer = SpyGraphViewer()
 
@@ -106,6 +137,7 @@ class TestDrawGraph:
             show_cycle_breakers=False,
             sys_path=[],
             current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
             build_graph=build_fake_graph,
             viewer=viewer,
         )
@@ -127,6 +159,7 @@ class TestDrawGraph:
             show_cycle_breakers=True,
             sys_path=[],
             current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
             build_graph=build_fake_graph,
             viewer=viewer,
         )

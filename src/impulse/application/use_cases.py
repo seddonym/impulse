@@ -12,6 +12,7 @@ def draw_graph(
     show_cycle_breakers: bool,
     sys_path: list[str],
     current_directory: str,
+    get_top_level_package: Callable[[str], str],
     build_graph: Callable[[str], grimp.ImportGraph],
     viewer: ports.GraphViewer,
 ) -> None:
@@ -23,6 +24,8 @@ def draw_graph(
         show_cycle_breakers: marks a set of dependencies that, if removed, would make the graph acyclic.
         sys_path: the sys.path list (or a test double).
         current_directory: the current working directory.
+        get_top_level_package: the function to retrieve the top level package name. This will usually be the first part
+            of the dotted module name (before the first dot), but for namespace packages it should be the 'portion' name.
         build_graph: the function which builds the graph of the supplied package
             (pass grimp.build_graph or a test double).
         viewer: GraphViewer for generating the graph image and opening it.
@@ -30,8 +33,8 @@ def draw_graph(
     # Add current directory to the path, as this doesn't happen automatically.
     sys_path.insert(0, current_directory)
 
-    module = grimp.Module(module_name)
-    grimp_graph = build_graph(module.package_name)
+    top_level_package = get_top_level_package(module_name)
+    grimp_graph = build_graph(top_level_package)
 
     dot = _build_dot(grimp_graph, module_name, show_import_totals, show_cycle_breakers)
 

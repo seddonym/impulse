@@ -5,6 +5,7 @@ latest
 ------
 
 * Add --show-cycle-breakers flag.
+* Support namespace packages.
 
 2.0 (2025-10-20)
 ----------------

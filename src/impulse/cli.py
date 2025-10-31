@@ -35,6 +35,7 @@ def drawgraph(module_name: str, show_import_totals: bool, show_cycle_breakers: b
         show_cycle_breakers=show_cycle_breakers,
         sys_path=sys.path,
         current_directory=os.getcwd(),
+        get_top_level_package=adapters.get_top_level_package,
         build_graph=grimp.build_graph,
         viewer=adapters.BrowserGraphViewer(),
     )
