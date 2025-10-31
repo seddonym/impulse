@@ -11,6 +11,7 @@ install-precommit:
 test:
     @uv run pytest
     @uv run impulse drawgraph grimp
+    @uv run --with=google-cloud-audit-log impulse drawgraph google.cloud.audit
     @uv run impulse drawgraph grimp --show-import-totals
     @uv run --with=django impulse drawgraph django.db --show-cycle-breakers
 
