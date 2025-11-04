@@ -1,9 +1,8 @@
 from collections.abc import Set
-from typing import Callable
+from collections.abc import Callable
 import itertools
 import grimp
 from impulse import ports, dotfile
-from typing import Optional
 
 
 def draw_graph(
@@ -64,7 +63,7 @@ class _DotGraphBuildStrategy:
 
     def build_edge(
         self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
-    ) -> Optional[dotfile.Edge]:
+    ) -> dotfile.Edge | None:
         raise NotImplementedError
 
 
@@ -77,7 +76,7 @@ class _ModuleSquashingBuildStrategy(_DotGraphBuildStrategy):
 
     def build_edge(
         self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
-    ) -> Optional[dotfile.Edge]:
+    ) -> dotfile.Edge | None:
         if grimp_graph.direct_import_exists(importer=downstream, imported=upstream):
             return dotfile.Edge(source=downstream, destination=upstream)
         return None
@@ -94,7 +93,7 @@ class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
         self.module_name = module_name
         self.show_import_totals = show_import_totals
         self.show_cycle_breakers = show_cycle_breakers
-        self.cycle_breakers: Optional[set[tuple[str, str]]] = None
+        self.cycle_breakers: set[tuple[str, str]] | None = None
 
     def should_concentrate(self) -> bool:
         # We need to see edge direction emphasized separately.
@@ -123,7 +122,7 @@ class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
         return coarse_grained_cycle_breakers
 
     @staticmethod
-    def _get_self_or_ancestor(candidate: str, ancestors: Set[str]) -> Optional[str]:
+    def _get_self_or_ancestor(candidate: str, ancestors: Set[str]) -> str | None:
         for ancestor in ancestors:
             if candidate == ancestor or candidate.startswith(f"{ancestor}."):
                 return ancestor
@@ -131,7 +130,7 @@ class _ImportExpressionBuildStrategy(_DotGraphBuildStrategy):
 
     def build_edge(
         self, grimp_graph: grimp.ImportGraph, upstream: str, downstream: str
-    ) -> Optional[dotfile.Edge]:
+    ) -> dotfile.Edge | None:
         if grimp_graph.direct_import_exists(
             importer=downstream, imported=upstream, as_packages=True
         ):

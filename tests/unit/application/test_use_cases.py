@@ -1,4 +1,3 @@
-from typing import Optional
 from impulse.application import use_cases
 from copy import copy
 from impulse import dotfile
@@ -59,7 +58,7 @@ def build_fake_graph(package_name: str) -> grimp.ImportGraph:
 
 class SpyGraphViewer(ports.GraphViewer):
     def __init__(self) -> None:
-        self.called_with_dot: Optional[dotfile.DotGraph] = None
+        self.called_with_dot: dotfile.DotGraph | None = None
 
     def view(self, dot: dotfile.DotGraph) -> None:
         self.called_with_dot = dot
