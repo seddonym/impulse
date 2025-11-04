@@ -1,6 +1,11 @@
 Changelog
 =========
 
+latest
+------
+
+* Drop support for Python 3.9.
+
 2.1 (2025-10-31)
 ----------------
 
