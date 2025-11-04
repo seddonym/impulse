@@ -84,6 +84,7 @@ import-linter = { workspace = true }
 dev = [
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
+    "pyupgrade>=3.21.0",
     "ruff>=0.13.2",
 ]
 docs = [
