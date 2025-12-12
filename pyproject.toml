@@ -1,6 +1,6 @@
 [project]
 name = "impulse"
-version = "2.1"
+version = "2.2"
 license = {text = "BSD 2-Clause License"}
 description = "Command line interface for analyzing Python imports."
 authors = [

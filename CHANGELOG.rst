@@ -1,8 +1,8 @@
 Changelog
 =========
 
-latest
-------
+2.2 (2025-12-12)
+----------------
 
 * Drop support for Python 3.9.
 * Don't pin Grimp dependency to 3.13.
