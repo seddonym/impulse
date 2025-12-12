@@ -9,10 +9,11 @@ Impulse
     :alt: Python versions
     :target: https://pypi.org/project/impulse/
 
-.. image:: https://api.travis-ci.com/seddonym/impulse.svg?branch=master
-    :target: https://app.travis-ci.com/github/seddonym/impulse
+.. image:: https://github.com/seddonym/impulse/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/seddonym/impulse/actions/workflows/main.yml
 
-* Free software: BSD license
+.. image:: https://img.shields.io/badge/License-BSD_2--Clause-orange.svg
+    :target: https://opensource.org/licenses/BSD-2-Clause
 
 Impulse is a command line tool for exploring the imports in a Python package.
 
