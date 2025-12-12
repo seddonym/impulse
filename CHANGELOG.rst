@@ -5,6 +5,7 @@ latest
 ------
 
 * Drop support for Python 3.9.
+* Don't pin Grimp dependency to 3.13.
 
 2.1 (2025-10-31)
 ----------------
