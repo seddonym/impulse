@@ -55,6 +55,8 @@ lint:
     @uv run ruff check
     @echo Running mypy...
     @uv run mypy src/impulse tests
+    @echo Linting imports...
+    @uv run lint-imports
     @echo
     @echo '👍 {{GREEN}} Linting all good.{{NORMAL}}'
 

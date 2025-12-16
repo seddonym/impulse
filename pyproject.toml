@@ -75,12 +75,9 @@ line_length = 99
 warn_unused_ignores = true
 warn_redundant_casts = true
 
-
-[tool.uv.sources]
-import-linter = { workspace = true }
-
 [dependency-groups]
 dev = [
+    "import-linter>=2.8",
     "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "pyupgrade>=3.21.0",
