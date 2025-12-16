@@ -1,0 +1,13 @@
+[importlinter]
+root_package = impulse
+
+[importlinter:contract:layers]
+name = Layered architecture
+type = layers
+containers = impulse
+layers =
+    cli
+    adapters
+    application
+    ports
+    dotfile
