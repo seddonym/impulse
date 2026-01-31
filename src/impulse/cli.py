@@ -41,6 +41,16 @@ def main():
     help="Hide nodes that have no incoming or outgoing edges.",
 )
 @click.option(
+    "--hide-nodes",
+    type=str,
+    default="",
+    help=(
+        "Comma-separated list of fnmatch patterns to hide nodes. "
+        "Patterns are matched against relative module names (without leading dot). "
+        "Example: --hide-nodes=foo,bar.* hides .foo, .bar.plop, .bar.plip.plup"
+    ),
+)
+@click.option(
     "--depth",
     type=int,
     default=1,
@@ -54,8 +64,14 @@ def drawgraph(
     force_console: bool,
     format: str,
     hide_unlinked: bool,
+    hide_nodes: str,
     depth: int,
 ) -> None:
+    # Parse hide_nodes patterns (comma-separated list)
+    hide_nodes_patterns = (
+        [p.strip() for p in hide_nodes.split(",") if p.strip()] if hide_nodes else []
+    )
+
     viewer: ports.GraphViewer
     if format == "html":
         if not force_console and sys.stdout.isatty():
@@ -72,6 +88,7 @@ def drawgraph(
         show_import_totals=show_import_totals,
         show_cycle_breakers=show_cycle_breakers,
         hide_unlinked=hide_unlinked,
+        hide_nodes_patterns=hide_nodes_patterns,
         depth=depth,
         sys_path=sys.path,
         current_directory=os.getcwd(),

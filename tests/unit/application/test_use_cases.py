@@ -313,7 +313,156 @@ class TestDrawGraph:
             Edge("mypackage.foo.blue", "mypackage.foo.green"),
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6e23bb0 (depth)
 =======
 >>>>>>> 39624fc (hide unlinked)
+=======
+
+    def test_draw_graph_hide_nodes_exact_match(self):
+        """Test that hide_nodes_patterns hides exact matching nodes."""
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
+            build_graph=build_fake_graph,
+            viewer=viewer,
+            hide_nodes_patterns=["blue"],
+        )
+
+        # "blue" should be hidden, but "blue.alpha" etc. should NOT be hidden
+        # since the pattern "blue" only matches exactly "blue"
+        assert "mypackage.foo.blue" not in viewer.called_with_dot.nodes
+        assert "mypackage.foo.green" in viewer.called_with_dot.nodes
+        assert "mypackage.foo.yellow" in viewer.called_with_dot.nodes
+        assert "mypackage.foo.red" in viewer.called_with_dot.nodes
+
+    def test_draw_graph_hide_nodes_wildcard_pattern(self):
+        """Test that hide_nodes_patterns with wildcard hides matching nodes."""
+
+        def build_graph_for_wildcard(package_name: str) -> grimp.ImportGraph:
+            graph = grimp.ImportGraph()
+            graph.add_module(package_name)
+            graph.add_module(SOME_MODULE)
+
+            # Create a hierarchy to test wildcard patterns
+            for child in ("foo", "bar", "baz", "other"):
+                graph.add_module(f"{SOME_MODULE}.{child}")
+
+            graph.add_import(
+                importer=f"{SOME_MODULE}.foo",
+                imported=f"{SOME_MODULE}.other",
+            )
+            return graph
+
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
+            build_graph=build_graph_for_wildcard,
+            viewer=viewer,
+            hide_nodes_patterns=["ba*"],  # Should hide "bar" and "baz"
+        )
+
+        assert viewer.called_with_dot.nodes == {
+            "mypackage.foo.foo",
+            "mypackage.foo.other",
+        }
+
+    def test_draw_graph_hide_nodes_nested_wildcard(self):
+        """Test that hide_nodes_patterns with nested wildcard hides matching nodes."""
+
+        def build_graph_for_nested(package_name: str) -> grimp.ImportGraph:
+            graph = grimp.ImportGraph()
+            graph.add_module(package_name)
+            graph.add_module(SOME_MODULE)
+
+            # Create depth 2 hierarchy
+            for child in ("bar", "other"):
+                graph.add_module(f"{SOME_MODULE}.{child}")
+            for grandchild in ("plop", "plip"):
+                graph.add_module(f"{SOME_MODULE}.bar.{grandchild}")
+            graph.add_module(f"{SOME_MODULE}.other.thing")
+
+            graph.add_import(
+                importer=f"{SOME_MODULE}.bar.plop",
+                imported=f"{SOME_MODULE}.other.thing",
+            )
+            return graph
+
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
+            build_graph=build_graph_for_nested,
+            viewer=viewer,
+            depth=2,
+            hide_nodes_patterns=["bar.*"],  # Should hide "bar.plop" and "bar.plip"
+        )
+
+        # bar.plop and bar.plip should be hidden
+        assert "mypackage.foo.bar.plop" not in viewer.called_with_dot.nodes
+        assert "mypackage.foo.bar.plip" not in viewer.called_with_dot.nodes
+        # bar and other.thing should remain
+        assert "mypackage.foo.bar" in viewer.called_with_dot.nodes
+        assert "mypackage.foo.other" in viewer.called_with_dot.nodes
+        assert "mypackage.foo.other.thing" in viewer.called_with_dot.nodes
+
+    def test_draw_graph_hide_nodes_multiple_patterns(self):
+        """Test that multiple hide_nodes_patterns work together."""
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
+            build_graph=build_fake_graph,
+            viewer=viewer,
+            hide_nodes_patterns=["blue", "red"],  # Hide both blue and red
+        )
+
+        assert viewer.called_with_dot.nodes == {
+            "mypackage.foo.green",
+            "mypackage.foo.yellow",
+        }
+
+    def test_draw_graph_hide_nodes_removes_corresponding_edges(self):
+        """Test that hiding nodes also removes edges to/from those nodes."""
+        viewer = SpyGraphViewer()
+
+        use_cases.draw_graph(
+            SOME_MODULE,
+            show_import_totals=False,
+            show_cycle_breakers=False,
+            sys_path=[],
+            current_directory="/cwd",
+            get_top_level_package=fake_get_top_level_package_non_namespace,
+            build_graph=build_fake_graph,
+            viewer=viewer,
+            hide_nodes_patterns=["blue"],
+        )
+
+        # Edges involving blue should be gone
+        for edge in viewer.called_with_dot.edges:
+            assert "blue" not in edge.source
+            assert "blue" not in edge.destination
+>>>>>>> cbfc506 (hide nodes)
